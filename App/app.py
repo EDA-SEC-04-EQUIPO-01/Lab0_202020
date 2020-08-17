@@ -74,20 +74,8 @@ def printMenu():
     print("4- Consultar elementos a partir de dos listas")
     print("0- Salir")
 
-def countElementsFilteredByColumn(criteria, column, lst):
-    """
-    Retorna cuantos elementos coinciden con un criterio para una columna dada  
-    Args:
-        criteria:: str
-            Critero sobre el cual se va a contar la cantidad de apariciones
-        column
-            Columna del arreglo sobre la cual se debe realizar el conteo
-        list
-            Lista en la cual se realizará el conteo, debe estar inicializada
-    Return:
-        counter :: int
-            la cantidad de veces ue aparece un elemento con el criterio definido
-    """
+def countElementsFilteredByColumn(criteria, column, lst):               
+    
     if len(lst)==0:
         print("La lista esta vacía")  
         return 0
@@ -101,6 +89,21 @@ def countElementsFilteredByColumn(criteria, column, lst):
         print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
     return counter
 
+
+def countElementsByCriteria3(criteria, lista, lista2):
+    suma=0
+    cont=0
+    ident=[]
+    for a in lista:
+        if criteria==a["director_name"]:
+            ident.append(a["id"])
+    for b in lista2:
+        if (b["\ufeffid"] in ident) and (float(b["vote_average"])>=6.0):
+            suma+=float(b["vote_average"])
+            cont+=1
+    k= round(suma/cont,2)
+    respuesta= str('Se han encontrado ') +str(cont) +str(' peliculas, las cuales tienen un promedio de ') +str(k)
+    return respuesta
 
 def countElementsByCriteria(criteria, casting, details):
     """
@@ -185,8 +188,12 @@ def main():
     Return: None 
     """
 
+    lista = [] #Casting
+    lista2 = [] #Details
+
     casting = [] #instanciar una lista vacia
     details = []
+
     while True:
         printMenu() #imprimir el menu de opciones en consola
         inputs =input('Seleccione una opción para continuar\n') #leer opción ingresada
@@ -212,7 +219,10 @@ def main():
                 criteria =input('Ingrese el nombre del director que va a buscar\n')
                 counter=countElementsByCriteria(criteria,casting,details)
                 print("Hay ",counter[0]," buenas películas producidas por: ", criteria ," y en promedio esas buenas películas tuvieron ", counter[1], " vote average")            elif int(inputs[0])==0: #opcion 0, salir
+
+            elif int(inputs[0])==0: #opcion 0, salir
                 sys.exit(0)
+                
 
 if __name__ == "__main__":
     main()
