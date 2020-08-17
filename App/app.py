@@ -90,26 +90,19 @@ def countElementsFilteredByColumn(criteria, column, lst):
     return counter
 
 def countElementsByCriteria(criteria, lista, lista2):
+    suma=0
+    cont=0
     ident=[]
     for a in lista:
         if criteria==a["director_name"]:
             ident.append(a["id"])
-    print(ident)
     for b in lista2:
-        if (float(b["vote_average"])>=6.0) and b["\ufeffid"] in ident:
-            print("funciona",ident)
-
-
-
-    print(ident)
-
-
-    # criteria es el nombre
-
-    """
-    Retorna la cantidad de elementos que cumplen con un criterio para una columna dada
-    """
-    return 0
+        if (b["\ufeffid"] in ident) and (float(b["vote_average"])>=6.0):
+            suma+=float(b["vote_average"])
+            cont+=1
+    k= round(suma/cont,2)
+    respuesta= str('Se han encontrado ') +str(cont) +str(' peliculas, las cuales tienen un promedio de ') +str(k)
+    return respuesta
 
 
 def main():
@@ -148,7 +141,7 @@ def main():
             elif int(inputs[0])==4: #opcion 4
                 criteria =input('Ingrese el criterio de búsqueda\n')
                 counter=countElementsByCriteria(criteria,lista,lista2)
-                print("Coinciden ",counter," elementos con el crtierio: '", criteria ,"' (en construcción ...)")
+                print(counter,"elementos con el crtierio: ", criteria)
             elif int(inputs[0])==0: #opcion 0, salir
                 sys.exit(0)
                 
