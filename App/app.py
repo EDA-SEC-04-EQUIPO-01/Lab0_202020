@@ -101,6 +101,7 @@ def countElementsFilteredByColumn(criteria, column, lst):
         print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
     return counter
 
+
 def countElementsByCriteria(criteria, casting, details):
     """
     Retorna la cantidad de elementos que cumplen con un criterio para una columna dada
@@ -137,6 +138,43 @@ def countElementsByCriteria(criteria, casting, details):
         return (goodmovies,promedio)
 
 
+def countElementsByCriteria2(criteria, lst, lst2,dif):
+    """
+    Retorna la cantidad de elementos que cumplen con un criterio para una columna dada
+    """
+    t1_start = process_time()
+    column="director_name"
+    counter = 0
+    ids = []
+    buenas = []
+    suma = 0
+    promedio = 0
+    for fila in lst:
+        if criteria.lower() in fila[column].lower():
+            ids.append(fila["id"])
+    for element in ids:
+        i = 0
+        seguir = True
+        while seguir == True and i<len(lst2):
+            if lst2[i][dif]==element and float(lst2[i]["vote_average"])>=6:
+                counter +=1
+                buenas.append(float(lst2[i]["vote_average"]))
+                seguir = False
+            else:
+                i+=1
+
+    for cal in buenas:
+        suma+=cal
+
+    if len(buenas) != 0:
+        promedio = round(suma/len(buenas),2)
+
+    t1_stop = process_time()
+    print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
+    
+    return (counter,promedio)
+    
+
 
 def main():
     """
@@ -146,6 +184,7 @@ def main():
     Args: None
     Return: None 
     """
+
     casting = [] #instanciar una lista vacia
     details = []
     while True:
@@ -172,8 +211,7 @@ def main():
             elif int(inputs[0])==4: #opcion 4
                 criteria =input('Ingrese el nombre del director que va a buscar\n')
                 counter=countElementsByCriteria(criteria,casting,details)
-                print("Hay ",counter[0]," buenas películas producidas por: ", criteria ," y en promedio esas buenas películas tuvieron ", counter[1], " vote average")
-            elif int(inputs[0])==0: #opcion 0, salir
+                print("Hay ",counter[0]," buenas películas producidas por: ", criteria ," y en promedio esas buenas películas tuvieron ", counter[1], " vote average")            elif int(inputs[0])==0: #opcion 0, salir
                 sys.exit(0)
 
 if __name__ == "__main__":
