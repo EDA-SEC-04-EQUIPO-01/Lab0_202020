@@ -123,12 +123,12 @@ def countElementsByCriteria(criteria, casting, details):
         for element in details:
             if len(ids) > pos:
                 try:
-                    if element["id"]==ids[pos] and float(element["vote_average"])>=6.5:
+                    if element["id"]==ids[pos] and float(element["vote_average"])>=6.0:
                         sumatoria += float(element["vote_average"])
                         goodmovies+=1
                         pos +=1
                 except:
-                    if element["\ufeffid"]==ids[pos] and float(element["vote_average"])>=6.5:
+                    if element["\ufeffid"]==ids[pos] and float(element["vote_average"])>=6.0:
                         sumatoria += float(element["vote_average"])
                         goodmovies+=1
                         pos +=1
