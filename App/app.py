@@ -7,7 +7,7 @@
  *
  * Desarrolado para el curso ISIS1225 - Estructuras de Datos y Algoritmos
  *
- *
+ *f
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -101,7 +101,44 @@ def countElementsFilteredByColumn(criteria, column, lst):
         print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
     return counter
 
-def countElementsByCriteria(criteria, lst, lst2,dif):
+
+def countElementsByCriteria(criteria, casting, details):
+    """
+    Retorna la cantidad de elementos que cumplen con un criterio para una columna dada
+    """
+    if len(casting)==0 or len(details)==0:
+        print("Algunas de las listas están vacía")  
+        return (0,0)
+    else:
+        ids = []
+        for element in casting:
+            if element["director_name"].lower() == criteria.lower():
+                ids.append(element["id"])
+        sumatoria = 0
+        goodmovies = 0
+        pos = 0
+        for element in details:
+            if len(ids) > pos:
+                try:
+                    if element["id"]==ids[pos] and float(element["vote_average"])>=6.5:
+                        sumatoria += float(element["vote_average"])
+                        goodmovies+=1
+                        pos +=1
+                except:
+                    if element["\ufeffid"]==ids[pos] and float(element["vote_average"])>=6.5:
+                        sumatoria += float(element["vote_average"])
+                        goodmovies+=1
+                        pos +=1
+            else:
+                break
+        try:
+            promedio = sumatoria/goodmovies
+        except:
+            promedio = 0
+        return (goodmovies,promedio)
+
+
+def countElementsByCriteria2(criteria, lst, lst2,dif):
     """
     Retorna la cantidad de elementos que cumplen con un criterio para una columna dada
     """
@@ -147,49 +184,34 @@ def main():
     Args: None
     Return: None 
     """
-    lista = [] #instanciar una lista vacia
-    lista2 = []
-    if len(lista)>2000:
-        dif = "\ufeffid"
+
+    casting = [] #instanciar una lista vacia
+    details = []
     while True:
         printMenu() #imprimir el menu de opciones en consola
         inputs =input('Seleccione una opción para continuar\n') #leer opción ingresada
         if len(inputs)>0:
             if int(inputs[0])==1: #opcion 1
-                input1 = input("Ingrese la ruta del archivo para las películas:")
-                loadCSVFile(input1, lista) #llamar funcion cargar datos
-                print("Datos de películas cargados, "+str(len(lista))+" elementos cargados")
-                input2 = input("Ingrese la ruta del archivo para el casting:")
-                loadCSVFile(input2, lista2) 
-                print("Datos de casting cargados, "+str(len(lista2))+" elementos cargados")
+                loadCSVFile("Data/AllMoviesCastingRaw.csv", casting) #llamar funcion cargar datos
+                loadCSVFile("Data/AllMoviesDetailsCleaned.csv",details)
+                print("Datos cargados, "+str(len(casting)+len(details))+" elementos cargados")
             elif int(inputs[0])==2: #opcion 2
-                if len(lista)==0: #obtener la longitud de la lista
-                    print("La lista de películas esta vacía")    
-                else: print("La lista de películas tiene "+str(len(lista))+" elementos")
-                if len(lista2)==0: 
-                    print("La lista de casting esta vacía")    
-                else: print("La lista de casting tiene "+str(len(lista2))+" elementos")
+                if len(casting)==0: #obtener la longitud de la lista
+                    print("La lista esta vacía")    
+                else: print("La lista tiene "+str(len(casting))+" elementos")
             elif int(inputs[0])==3: #opcion 3
-                x = int(input("¿Desea buscar en la lista de películas o en la lista de casting? (Seleccione 1 o 2 respectivamente):"))
-                criteria =input('Ingrese el criterio de búsqueda: \n')
-                columna = input("Ingrese la columna en que desea buscar (nombre): ")
-                if x==1:
-                    counter=countElementsFilteredByColumn(criteria, columna, lista) #filtrar una columna por criterio  
-                    print("Coinciden ",counter," elementos con el crtierio: ", criteria  )
-                elif x==2:
-                    counter=countElementsFilteredByColumn(criteria, columna, lista2) #filtrar una columna por criterio  
-                    print("Coinciden ",counter," elementos con el crtierio: ", criteria  )
+                archivo = input("Ingresa 1 si quieres buscarlo en el archivo de Casting o 2 en el archivo de detalles\n")
+                criteria =input('Ingrese el criterio de búsqueda\n')
+                columna = input("Ingresa el nombre de la columna en la que quieres buscar\n")
+                if archivo == "1":
+                    counter=countElementsFilteredByColumn(criteria, columna, casting) #filtrar una columna por criterio  
                 else:
-                    print("Seleccione una lista valida")
+                    counter=countElementsFilteredByColumn(criteria, columna, details)
+                print("Coinciden ",counter," elementos con el crtierio: ", criteria  )
             elif int(inputs[0])==4: #opcion 4
-                if len(lista)>2000:
-                    dif = "\ufeffid"
-                else:
-                    dif = "id"
-                criteria =input('Ingrese el nombre del director\n')
-                counter=countElementsByCriteria(criteria,lista2,lista,dif)
-                print("Existen",counter[0],"peliculas buenas del director",criteria,"con un promedio de votación de",counter[1])
-            elif int(inputs[0])==0: #opcion 0, salir
+                criteria =input('Ingrese el nombre del director que va a buscar\n')
+                counter=countElementsByCriteria(criteria,casting,details)
+                print("Hay ",counter[0]," buenas películas producidas por: ", criteria ," y en promedio esas buenas películas tuvieron ", counter[1], " vote average")            elif int(inputs[0])==0: #opcion 0, salir
                 sys.exit(0)
 
 if __name__ == "__main__":
